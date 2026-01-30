@@ -71,4 +71,16 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * 新增员工
+     * @param employee
+     * @return
+     */
+    @PostMapping
+    public Result save(@RequestBody Employee employee){
+        log.info("新增员工，员工数据：{}",employee);
+        employeeService.save(employee);
+        return Result.success();
+    }
+
 }
