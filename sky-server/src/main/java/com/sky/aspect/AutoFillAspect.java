@@ -51,7 +51,7 @@ public class AutoFillAspect {
 
         LocalDateTime now = LocalDateTime.now();
         Long currentId = BaseContext.getCurrentId();
-        if (autoFill.value() == OperationType.UPDATE) {
+        if (autoFill.value() == OperationType.INSERT) {
             //为4个公共字段赋值
             try {
                 Method setCreateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
