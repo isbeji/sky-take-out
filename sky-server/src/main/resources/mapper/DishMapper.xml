@@ -63,4 +63,8 @@
         </where>
         order by dish.create_time desc
     </select>
+
+    <select id="list" resultType="com.sky.entity.Dish">
+        select * from dish where status = 1 and category_id = #{categoryId}
+    </select>
 </mapper>
