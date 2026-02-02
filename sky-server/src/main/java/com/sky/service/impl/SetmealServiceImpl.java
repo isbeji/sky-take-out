@@ -12,6 +12,7 @@ import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.exception.SetmealEnableFailedException;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -76,21 +78,91 @@ public class SetmealServiceImpl implements SetmealService {
     @Transactional
     public void deleteBatch(List<Long> ids) {
         ids.forEach(id -> {
-            SetmealDTO setmealDTO = setmealMapper.getById(id);
-            if (setmealDTO != null){
-                List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
-                if (setmealDTO.getStatus() == StatusConstant.ENABLE){
+            Setmeal setmeal = setmealMapper.getById(id);
+            if (setmeal != null){
+                if (setmeal.getStatus() == StatusConstant.ENABLE){
                     throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
                 }
-                setmealDishes.forEach(setmealdish -> {
-                    Dish dish = dishMapper.getById(setmealdish.getDishId());
-                    if (dish.getStatus()==StatusConstant.ENABLE){
-                        throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ENABLE_FAILED);
+            }
+        });
+
+        setmealMapper.deleteBatch(ids);
+        setmealDishMapper.deleteBySetmealId(ids);
+    }
+
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    @Override
+    public SetmealVO getById(Long id) {
+        Setmeal setmeal = setmealMapper.getById(id);
+        List<SetmealDish> setmealDishes = setmealDishMapper.getBySetmealId(id);
+
+        SetmealVO setmealVO = new SetmealVO();
+        BeanUtils.copyProperties(setmeal, setmealVO);
+        setmealVO.setSetmealDishes(setmealDishes);
+
+        return setmealVO;
+    }
+
+    /**
+     * 修改套餐
+     * @param setmealDTO
+     */
+    @Override
+    @Transactional
+    public void update(SetmealDTO setmealDTO) {
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+        setmealMapper.update(setmeal);
+
+        List<Long> ids = new ArrayList<>();
+        ids.add(setmealDTO.getId());
+        setmealDishMapper.deleteBySetmealId(ids);
+
+        Long id = setmealDTO.getId();
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        if (setmealDishes != null && setmealDishes.size() > 0){
+            setmealDishes.forEach(dish -> dish.setSetmealId(id));
+            setmealDishMapper.insertBatch(setmealDishes);
+        }
+    }
+
+    /**
+     * 套餐起售、停售
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        /*List<SetmealDish> setmealDishes = setmealDishMapper.getBySetmealId(id);
+        if (setmealDishes != null && setmealDishes.size() > 0){
+            for (SetmealDish setmealDish : setmealDishes) {
+                Dish dish = dishMapper.getById(setmealDish.getDishId());
+                if (status == StatusConstant.ENABLE && dish.getStatus() == StatusConstant.DISABLE){
+                    throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ENABLE_FAILED);
+                }
+            }
+        }*/
+
+        //起售套餐时，判断套餐内是否有停售菜品，有停售菜品提示"套餐内包含未启售菜品，无法启售"
+        if(status == StatusConstant.ENABLE){
+            List<Dish> dishList = dishMapper.getBySetmealId(id);
+            if(dishList != null && dishList.size() > 0){
+                dishList.forEach(dish -> {
+                    if(StatusConstant.DISABLE == dish.getStatus()){
+                        throw new SetmealEnableFailedException(MessageConstant.SETMEAL_ENABLE_FAILED);
                     }
                 });
             }
-        });
-        setmealMapper.deleteBatch(ids);
-        setmealDishMapper.deleteBySetmealId(ids);
+        }
+
+        Setmeal setmeal = Setmeal.builder()
+                .id(id)
+                .status(status)
+                .build();
+        setmealMapper.update(setmeal);
     }
 }
