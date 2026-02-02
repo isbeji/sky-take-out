@@ -52,4 +52,11 @@ public interface DishMapper {
      */
     @Select("select * from sky_take_out.dish where id = #{id}")
     Dish getById(Long id);
+
+    /**
+     * 修改菜品
+     * @param dish
+     */
+    @AutoFill(value = OperationType.UPDATE)
+    void update(Dish dish);
 }
