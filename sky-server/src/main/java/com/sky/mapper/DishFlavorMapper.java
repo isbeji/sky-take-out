@@ -28,6 +28,6 @@ public interface DishFlavorMapper {
      * @param dishid
      * @return
      */
-    @Select("select * from dish_flavor where dish_id = #{dishid}")
+    @Select("select * from sky_take_out.dish_flavor where dish_id = #{dishid}")
     List<DishFlavor> getByDishId(Long dishid);
 }
