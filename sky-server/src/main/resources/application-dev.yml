@@ -19,6 +19,15 @@ sky:
     access-key-secret: 1ofk6OfvG0nLqwi45E9eUsFsA862nf
     bucket-name: java1111111
 
+
   wechat:
     appid: wxf15ae0e7f5905a13
     secret: e99f4536a938176f685832d78c61c527
+    # 微信支付相关配置
+    mchid: 1561414331
+    mchSerialNo: 4B3B3DC35414AD50B1B755BAF8DE9CC7CF407606
+    privateKeyFilePath: D:\apiclient_key.pem
+    apiV3Key: CZBK51236435wxpay435434323FFDuv3
+    weChatPayCertFilePath: D:\wechatpay_166D96F876F45C7D07CE98952A96EC980368ACFC.pem
+    notifyUrl:  http://5f477cef.r10.cpolar.top/wxpay/pay.php
+    refundNotifyUrl:  http://5f477cef.r10.cpolar.top/wxpay/pay.php

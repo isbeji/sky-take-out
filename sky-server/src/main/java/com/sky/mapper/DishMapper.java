@@ -50,7 +50,7 @@ public interface DishMapper {
      * @param id
      * @return
      */
-    @Select("select * from sky_take_out.dish where id = #{id}")
+    @Select("select * from dish where id = #{id}")
     Dish getById(Long id);
 
     /**
