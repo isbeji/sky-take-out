@@ -1,8 +1,10 @@
 package com.sky.controller.user;
 
+import com.github.pagehelper.Page;
 import com.sky.dto.OrdersDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
@@ -52,5 +54,53 @@ public class OrderController {
         return  Result.success();
     }
 
+    /**
+     * 历史订单查询
+     * @param page
+     * @param pageSize
+     * @param status
+     * @return
+     */
+    @GetMapping("/historyOrders")
+    public Result<PageResult> list(Integer page, Integer pageSize, Integer status){
+        log.info("查询订单列表：page={}, pageSize={}, status={}", page, pageSize, status);
+        PageResult pageResult = orderService.pageQuery(page, pageSize, status);
+        return Result.success(pageResult);
+    }
 
+    /**
+     * 订单详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/orderDetail/{id}")
+    public Result<OrderVO> show(@PathVariable Long id){
+        log.info("查询订单详情：{}", id);
+        OrderVO orderVO = orderService.show(id);
+        return Result.success(orderVO);
+    }
+
+    /**
+     * 取消订单
+     * @param id
+     * @return
+     */
+    @PutMapping("/cancel/{id}")
+    public Result cancel(@PathVariable Long id) throws Exception {
+        log.info("取消订单：{}", id);
+        orderService.cancel(id);
+        return Result.success();
+    }
+
+    /**
+     * 再来一单
+     * @param id
+     * @return
+     */
+    @PostMapping("/repetition/{id}")
+    public Result repetition(@PathVariable Long id){
+        log.info("再来一单：{}", id);
+        orderService.repetition(id);
+        return Result.success();
+    }
 }

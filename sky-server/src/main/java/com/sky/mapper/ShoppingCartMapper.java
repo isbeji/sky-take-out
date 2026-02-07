@@ -48,4 +48,10 @@ public interface ShoppingCartMapper {
      * @param shoppingCart
      */
     void subShoppingCart(ShoppingCart shoppingCart);
+
+    /**
+     * 批量插入购物车数据
+     * @param shoppingCartList
+     */
+    void insertBatch(List<ShoppingCart> shoppingCartList);
 }
