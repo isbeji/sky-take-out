@@ -31,3 +31,9 @@ sky:
     weChatPayCertFilePath: D:\wechatpay_166D96F876F45C7D07CE98952A96EC980368ACFC.pem
     notifyUrl:  http://5f477cef.r10.cpolar.top/wxpay/pay.php
     refundNotifyUrl:  http://5f477cef.r10.cpolar.top/wxpay/pay.php
+
+  #百度地图配置
+  shop:
+    address: 山东省青岛市山东科技大学
+  baidu:
+    ak: NjesycUBkqgHzBtqzAxOkKjPylMUEjHx
