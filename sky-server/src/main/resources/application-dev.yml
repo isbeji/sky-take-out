@@ -34,6 +34,6 @@ sky:
 
   #百度地图配置
   shop:
-    address: 山东省青岛市山东科技大学
+    address: 
   baidu:
-    ak: NjesycUBkqgHzBtqzAxOkKjPylMUEjHx
+    ak:
